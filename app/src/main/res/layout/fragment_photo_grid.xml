@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ru.brandymint.cadcam.app.PhotoFragment">
+
+    <GridView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:verticalSpacing="5dp"
+        android:horizontalSpacing="5dp"
+        android:paddingTop="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/activity_horizontal_margin"
+        android:clipToPadding="false"
+        android:paddingLeft="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_vertical_margin"
+        android:scrollbarStyle="outsideOverlay"
+        android:layout_marginRight="4dp"
+        tools:listitem="@layout/item_photo_grid"
+        android:numColumns="@integer/column_count" />
+
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center" />
+
+</FrameLayout>

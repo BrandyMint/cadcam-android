@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Cadcam</string>
+    <string name="take_photo">Сфотографировать</string>
+    <string name="error_location_not_found">Не удалось определить текущее местоположение</string>
+    <string name="sync_status_new">Не загружено</string>
+    <string name="sync_status_uploaded"></string>
+    <string name="sync_status_uploading">Загружается</string>
+    <string name="enter_comment_dialog_title">Комментарий</string>
+
+</resources>

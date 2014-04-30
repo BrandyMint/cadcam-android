@@ -1,0 +1,13 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ru.brandymint.cadcam.app.MainActivity" >
+
+    <item android:id="@+id/action_take_photo"
+        android:title="@string/take_photo"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_camera" />
+
+
+</menu>

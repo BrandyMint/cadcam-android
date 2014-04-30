@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="18dp"
+    android:background="@drawable/grid_background"
+    >
+
+    <ru.brandymint.cadcam.app.SquaredImageView
+        android:id="@+id/photo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:clickable="false"
+        android:cropToPadding="true"
+        android:drawSelectorOnTop="true"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/photo"
+        android:layout_toLeftOf="@+id/status"
+        android:layout_alignParentLeft="true"
+        tools:text="28.04.2014"
+        android:padding="4dp" />
+
+    <TextView
+        android:id="@+id/status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/photo"
+        android:layout_alignBaseline="@id/date"
+        android:layout_alignParentRight="true"
+        tools:text="Не загружено"
+        android:padding="4dp" />
+
+    <TextView
+        android:id="@+id/comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/date"
+        android:padding="4dp"
+        tools:text="Пидорги! Кругом одни пидорги!" />
+
+</RelativeLayout>
