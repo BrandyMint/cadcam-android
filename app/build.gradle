@@ -8,7 +8,7 @@ android {
         minSdkVersion 8
         targetSdkVersion 19
         versionCode 1
-        versionName "1.0"
+        versionName "1.1b1"
     }
 
     compileOptions {
@@ -16,8 +16,20 @@ android {
         targetCompatibility JavaVersion.VERSION_1_7
     }
 
+    defaultConfig {
+        buildConfigField "String", "ACRA_URL", project.hasProperty('AcraUrl') ? '"' + project['AcraUrl'] + '"' : "\"\"";
+        buildConfigField "String", "ACRA_LOGIN", project.hasProperty('AcraLogin') ? '"' + project['AcraLogin'] + '"' : "\"\"";
+        buildConfigField "String", "ACRA_PASSWORD", project.hasProperty('AcraPassword') ? '"' + project['AcraPassword'] + '"' : "\"\"";
+    }
+
     signingConfigs {
         release
+        betaConfig {
+            storeFile file("keystore.beta.jks")
+            storePassword "betabeta"
+            keyAlias "beta"
+            keyPassword "betabeta"
+        }
     }
 
     buildTypes {
@@ -26,12 +38,23 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
             signingConfig signingConfigs.release
         }
+        beta {
+            debuggable false
+            jniDebugBuild false
+            runProguard true
+            proguardFile getDefaultProguardFile('proguard-android.txt')
+            proguardFile "proguard-rules.txt"
+            signingConfig signingConfigs.betaConfig
+        }
     }
 
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile(group: 'ch.acra', name: 'acra', version: '4.5.0') {
+        exclude(group: 'org.json', module: 'json')
+    }
     compile 'com.android.support:appcompat-v7:19.1.0'
     compile 'com.android.support:gridlayout-v7:19.1.0'
     compile 'com.android.support:support-v4:19.1.0'
@@ -44,7 +67,6 @@ dependencies {
         exclude(group: 'junit', module: 'junit')
         exclude(group: 'com.google.android', module: 'android')
     }
-
 }
 
 if (hasProperty('StoreFile')) {

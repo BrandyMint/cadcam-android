@@ -1,0 +1,8 @@
+StoreFile=cadcam.keystore
+StorePassword=pass
+KeyAlias=release
+KeyPassword=pass
+
+AcraUrl=http://acra.icfdev.ru/acra-cadcam/_design/acra-storage/_update/report
+AcraLogin=
+AcraPassword=

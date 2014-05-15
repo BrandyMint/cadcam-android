@@ -8,5 +8,5 @@
     <string name="sync_status_uploaded"></string>
     <string name="sync_status_uploading">Загружается</string>
     <string name="enter_comment_dialog_title">Комментарий</string>
-
+    <string name="crash_toast_text">Сбой. Сформирован и отправлен отчет.</string>
 </resources>

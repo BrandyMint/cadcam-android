@@ -4,3 +4,4 @@
 .DS_Store
 app/cadcam.keystore
 app/gradle.properties
+*.iml
