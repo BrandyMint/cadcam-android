@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -19,7 +20,10 @@ import android.widget.Toast;
 
 import com.google.api.client.http.HttpTransport;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,12 +41,21 @@ public class MainActivity extends ActionBarActivity implements PhotoFragment.OnF
     private static final String KEY_CURRENT_IMAGE_TIMESTAMP = "KEY_CURRENT_IMAGE_TIMESTAMP";
     private static final String KEY_CURRENT_IMAGE_LOCATION = "KEY_CURRENT_IMAGE_LOCATION";
     private static final String KEY_LAST_LOCATION = "KEY_LAST_LOCATION";
-
+    private static final int SELECT_IMAGE = 1;
     private Date mCurrentImageTimestamp;
     private Location mCurrentImageLocation;
 
     private Location mLastLocation = null;
+    private Uri selectedImageUri;
 
+
+    void setSelectedImageUri( Uri mSelectedImageUri) {
+        selectedImageUri = mSelectedImageUri;
+    }
+
+    Uri getSelectedImageUri() {
+        return selectedImageUri ;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +87,7 @@ public class MainActivity extends ActionBarActivity implements PhotoFragment.OnF
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        //
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -84,6 +98,9 @@ public class MainActivity extends ActionBarActivity implements PhotoFragment.OnF
         switch (id) {
             case R.id.action_take_photo:
                 takePhoto();
+                return true;
+            case R.id.action_select_photo:
+                takeImage();
                 return true;
             default:
                 break;
@@ -97,7 +114,7 @@ public class MainActivity extends ActionBarActivity implements PhotoFragment.OnF
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 File fileUri = Utils.getOutputMediaFile(mCurrentImageTimestamp);
-
+                setSelectedImageUri(null);
                 /*
                 try {
                     // XXX: http://stackoverflow.com/a/17930305/2971719
@@ -118,8 +135,30 @@ public class MainActivity extends ActionBarActivity implements PhotoFragment.OnF
                 // Image capture failed, advise user
                 mCurrentImageTimestamp = null;
             }
+
+        }
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == SELECT_IMAGE) {
+                setSelectedImageUri(data.getData());
+
+                EnterCommentDialogFragment fragment = new EnterCommentDialogFragment();
+                fragment.show(getSupportFragmentManager(), "enterComment");
+            }
         }
     }
+    public String getPath(Uri uri) {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = managedQuery(uri, projection, null, null, null);
+        if(cursor!=null)
+        {
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        }
+        else return null;
+    }
+
 
     @Override
     protected void onStart() {
@@ -156,6 +195,16 @@ public class MainActivity extends ActionBarActivity implements PhotoFragment.OnF
         Uri fileUri = Utils.getOutputMediaFileNameUri(mCurrentImageTimestamp);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
         startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+    }
+
+    private void takeImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        mCurrentImageTimestamp = new Date();
+        selectedImageUri = null;
+        Uri fileUri = Utils.getOutputMediaFileNameUri(mCurrentImageTimestamp);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"),SELECT_IMAGE);
     }
 
     private Uri savePhotoMetadata(File filename, String comment, Location location) {
@@ -205,13 +254,32 @@ public class MainActivity extends ActionBarActivity implements PhotoFragment.OnF
     @Override
     public void onDialogClosed(String comment) {
         Location l = mCurrentImageLocation;
+        Uri imageUri;
         if (l == null) l = getLocation();
 
         if (l == null) {
             Toast.makeText(this, R.string.error_location_not_found, Toast.LENGTH_LONG).show();
             Utils.getOutputMediaFile(mCurrentImageTimestamp).delete();
         } else {
-            Uri imageUri = savePhotoMetadata(Utils.getOutputMediaFile(mCurrentImageTimestamp), comment, l);
+
+            Uri selectImageUri = getSelectedImageUri();
+            if (selectImageUri == null) {
+                imageUri = savePhotoMetadata(Utils.getOutputMediaFile(mCurrentImageTimestamp), comment, l);
+            } else{
+                String ImageUriString =  getPath(selectImageUri);
+                File ImageUriFileBefore =  new File(ImageUriString);
+                String destinationPath = Utils.getOutputMediaFile(mCurrentImageTimestamp).getPath();
+                File destination = new File(destinationPath);
+                try
+                {
+                    FileUtils.copyFile(ImageUriFileBefore, destination);
+                }
+                catch (IOException e)
+                {
+                    e.printStackTrace();
+                }
+                imageUri = savePhotoMetadata(destination, comment, l);
+            }
             startUploadImage(imageUri);
         }
     }

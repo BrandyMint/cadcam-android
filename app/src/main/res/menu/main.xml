@@ -9,5 +9,10 @@
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_action_camera" />
 
+    <item android:id="@+id/action_select_photo"
+        android:title="Выбрать фото"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_select_all" />
 
 </menu>
